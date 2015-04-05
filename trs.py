@@ -83,7 +83,7 @@ class Translation(object):
             response = urllib2.urlopen(
                 self.BASE_URL, data=data, timeout=self.timeout)
             if response.code != 200:
-                print "Error: Network error 500"
+                print "Error: Network error %s" % response.code
                 sys.exit(1)
             content = response.read()
         except urllib2.HTTPError as exc:
