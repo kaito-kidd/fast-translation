@@ -23,7 +23,7 @@
 
 3. 推荐使用方法
 
-    >> sudo mv ./trs.py /usr/bin/trs
+    >> sudo cp ./trs.py /usr/bin/trs
     >> sudo chmod +x /usr/bin/trs
 
     >> trs "Hello World"
