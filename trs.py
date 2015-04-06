@@ -54,7 +54,7 @@ class Translation(object):
         self.to = to
         self.timeout = 15
         if len(input_args) != 2:
-            print 'Error: Enter a word!'
+            print 'Error: Enter a word or sentence!'
             sys.exit(1)
         self.word = self.parse_args(input_args)
         self.translate()
