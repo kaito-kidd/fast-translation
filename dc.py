@@ -110,7 +110,7 @@ class Dictionary(Parser):
         word_name, symbols = data["word_name"], data["symbols"]
         symbol = symbols[0]
         parts = symbol["parts"]
-        # 中 --> 英
+        # 英 --> 中
         if to == "zh" and from_ == "en":
             head = u"%s [英]:[%s] [美]:[%s]" \
                 % (word_name, symbol["ph_en"], symbol["ph_am"])
@@ -120,7 +120,7 @@ class Dictionary(Parser):
                 content = "; ".join([mean for mean in item["means"]])
                 line_body.append("%s %s" % (prop, content))
             body = "\n".join(line_body)
-        # 英 --> 中
+        # 中 --> 英
         elif to == "en" and from_ == "zh":
             head = "%s [%s]" % (word_name, symbol["ph_zh"])
             body = "; ".join([line for line in parts[0]["means"]])
