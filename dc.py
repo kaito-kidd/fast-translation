@@ -42,30 +42,25 @@
 
 """
 
-import os
+# sys
 import sys
-import urllib2
 import urllib
-import json
+
+# my
+from parser import Parser
 
 
-class Dictionary(object):
+class Dictionary(Parser):
 
     """ 词典 """
 
     # config
     BASE_URL = "http://openapi.baidu.com/public/2.0/translate/dict/simple"
-    API_KEY = "GM3N6zSue8SvSFU7xhWTZPQ9"
 
-    def __init__(self, input_args, from_="auto", to="auto"):
-        self.from_ = from_
-        self.to = to
-        self.timeout = 15
-        if len(input_args) != 2:
-            print 'Error: Enter a word!'
-            sys.exit(1)
-        self.word_or_sentence = self.parse_args(input_args)
-        self.translate()
+    def __init__(self, input_args):
+        args_errmsg = "Enter a word!"
+        super(Dictionary, self).__init__(
+            input_args, args_errmsg=args_errmsg)
 
     def parse_args(self, input_args):
         """解析命令
@@ -75,24 +70,6 @@ class Dictionary(object):
             print 'Error: Enter a word!'
             sys.exit(1)
         return word
-
-    def translate(self):
-        """翻译
-        """
-        # 构建URL和参数
-        url, data = self.build_url_params()
-        try:
-            response = urllib2.urlopen(
-                url, data=data, timeout=self.timeout)
-            if response.code != 200:
-                print "Error: Network error %s" % response.code
-                sys.exit(1)
-            content = response.read()
-        except urllib2.HTTPError as exc:
-            print "Error: %s" % str(exc)
-            sys.exit(1)
-        res = json.loads(content)
-        self.parse_result(res)
 
     def build_url_params(self):
         """构建请求参数
@@ -109,6 +86,8 @@ class Dictionary(object):
 
     def parse_result(self, res):
         """解析结果
+
+        @res, dict, API返回的数据
         """
         if res["errno"] != 0:
             print "Error: %s %s" % (res["errno"], res["errmsg"])
@@ -118,10 +97,10 @@ class Dictionary(object):
             print "No results!"
             sys.exit(1)
         to, from_ = res["to"], res["from"]
-        result = self.pack_content(to, from_, data)
+        result = self._pack_content(to, from_, data)
         print result
 
-    def pack_content(self, to, from_, data):
+    def _pack_content(self, to, from_, data):
         """组装内容
 
         @to, str, to
