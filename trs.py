@@ -38,22 +38,27 @@
 import os
 import sys
 import urllib
+import urllib2
+import json
 
-# my
-from parser import Parser
 
-
-class Translation(Parser):
+class Translation(object):
 
     """ 翻译 """
 
     # config
     BASE_URL = "http://openapi.baidu.com/public/2.0/bmt/translate"
+    API_KEY = "GM3N6zSue8SvSFU7xhWTZPQ9"
 
-    def __init__(self, input_args):
-        args_errmsg = "Enter a or sentence!"
-        super(Translation, self).__init__(
-            input_args, args_errmsg=args_errmsg)
+    def __init__(self, input_args, from_="auto", to="auto"):
+        self.from_ = from_
+        self.to = to
+        self.timeout = 10
+        if len(input_args) != 2:
+            print 'Error: Enter a or sentence!'
+            sys.exit(1)
+        self.word_or_sentence = self.parse_args(input_args)
+        self.translate()
 
     def parse_args(self, input_args):
         """解析命令
@@ -64,6 +69,24 @@ class Translation(Parser):
             with open(word_or_file) as fop:
                 return fop.read().strip()
         return word_or_file
+
+    def translate(self):
+        """翻译
+        """
+        # 构建URL和参数
+        url, data = self.build_url_params()
+        try:
+            response = urllib2.urlopen(
+                url, data=data, timeout=self.timeout)
+            if response.code != 200:
+                print "Error: Network error %s" % response.code
+                sys.exit(1)
+            content = response.read()
+        except urllib2.HTTPError as exc:
+            print "Error: %s" % str(exc)
+            sys.exit(1)
+        res = json.loads(content)
+        self.parse_result(res)
 
     def build_url_params(self):
         """构建请求参数
