@@ -67,7 +67,8 @@ class Dictionary(object):
         self.word_or_sentence = self.parse_args(input_args)
         self.translate()
 
-    def parse_args(self, input_args):
+    @staticmethod
+    def parse_args(input_args):
         """解析命令
         """
         word = input_args[1].strip()
